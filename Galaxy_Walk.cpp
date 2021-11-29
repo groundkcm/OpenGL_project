@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 //glm::vec3 cameraPos = glm::vec3(0.0f, 10.0, 0.0f);
 glm::vec3 cameraPos = glm::vec3(0.0f, 5.0, 5.0f);
 glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0, 0.0f);
@@ -23,6 +22,7 @@ GLuint VAO[3], CUB;
 GLuint VBO_position[3];
 GLuint VBO_normal[3];
 GLuint VBO_color[3];
+
 float vertices[] = { //--- 버텍스 속성: 좌표값(FragPos), 노말값 (Normal)
 -0.05f, -0.05f, -0.05f, 0.0f, 0.0f, -1.0f, 0.05f, -0.05f, -0.05f, 0.0f, 0.0f, -1.0f, 0.05f, 0.05f, -0.05f, 0.0f, 0.0f, -1.0f,
 0.05f, 0.05f, -0.05f, 0.0f, 0.0f, -1.0f, -0.05f, 0.05f, -0.05f, 0.0f, 0.0f, -1.0f, -0.05f, -0.05f, -0.05f, 0.0f, 0.0f, -1.0f,
@@ -44,26 +44,6 @@ void Display();
 void Reshape(int w, int h);
 void Keyboard(unsigned char key, int x, int y);
 void InitBuffer();
-
-
-int num_Triangle;
-
-std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
-std::vector< glm::vec3 > temp_vertices;
-std::vector< glm::vec2 > temp_uvs;
-std::vector< glm::vec3 > temp_normals;
-std::vector< glm::vec3 > outvertex, outnormal;
-std::vector< glm::vec2 > outuv;
-
-int loadObj(const char* filename);
-int loadObj_normalize_center(const char* filename);
-float sumX = 0.0, sumY = 0.0, sumZ = 0.0;
-float aveX, aveY, aveZ;
-float scaleX, scaleY, scaleZ;
-float minX = 0.0, minY = 0.0, minZ = 0.0;
-float maxX = 0.0, maxY = 0.0, maxZ = 0.0;
-float scaleAll;
-
 
 int main(int argc, char** argv)
 {
@@ -421,7 +401,7 @@ void Display()
 
 
 
-	glm::mat4 	view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+	glm::mat4 view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
 	glm::mat4 projection = glm::mat4(1.0f);
 
 	projection = glm::perspective(glm::radians(glm::degrees(120.0f)), 1.0f, 0.1f, 100.0f);
@@ -484,18 +464,9 @@ void Display()
 	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &neptune[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-
-	//glBindVertexArray(CUB);
-	//glm::mat4 boxmodel = glm::translate(glm::mat4(1.0f), glm::vec3(sunpos));
-	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &boxmodel[0][0]);
-	//glUniform3f(objColorLocation, 1.0, 1.0, 1.0);
-
-	//glDrawArrays(GL_TRIANGLES, 0, 36);
-
 	glutSwapBuffers();
 
 }
-
 
 void Reshape(int w, int h)
 {
@@ -540,9 +511,6 @@ void timer_y(int value)
 
 	glutTimerFunc(10, timer_y, 1);
 	glutPostRedisplay();
-
-
-
 
 }
 
