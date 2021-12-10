@@ -2,6 +2,7 @@
 
 in vec3 FragPos; 
 in vec3 Normal; 
+in vec2 TexCoord;
 
 out vec4 FragColor; 
 
@@ -9,6 +10,7 @@ uniform vec3 viewPos;
 uniform vec3 lightPos; 
 uniform vec3 lightColor; 
 uniform vec3 objectColor;
+uniform sampler2D texture1; 
 
 void main(void) 
 {
@@ -27,7 +29,9 @@ void main(void)
 	specularLight = pow(specularLight, shininess); 
 	vec3 specular =specularLight * lightColor;
 
-	vec3 result = (ambient + diffuse + specular) * objectColor;
+	vec3 result = (ambient + diffuse + specular);
 
 	FragColor = vec4 (result, 1.0f);
+
+	FragColor = texture(texture1, TexCoord) * FragColor;
 }

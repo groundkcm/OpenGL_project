@@ -1,14 +1,16 @@
 #define _CRT_SECURE_NO_WARNINGS
+#define STB_IMAGE_IMPLEMENTATION
 #include "shader.h"
 
 
 using namespace std;
 
 //glm::vec3 cameraPos = glm::vec3(0.0f, 10.0, 0.0f);
-glm::vec3 cameraPos = glm::vec3(0.0f, 5.0, 5.0f);
-glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0, 0.0f);
-
-glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0, 5.0f);
+//glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0, 0.0f);
+//
+//glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0, 0.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 glm::vec3 lightpos = glm::vec3(0,5,0);
@@ -23,27 +25,63 @@ GLuint VBO_position[3];
 GLuint VBO_normal[3];
 GLuint VBO_color[3];
 
-float vertices[] = { //--- 버텍스 속성: 좌표값(FragPos), 노말값 (Normal)
--0.05f, -0.05f, -0.05f, 0.0f, 0.0f, -1.0f, 0.05f, -0.05f, -0.05f, 0.0f, 0.0f, -1.0f, 0.05f, 0.05f, -0.05f, 0.0f, 0.0f, -1.0f,
-0.05f, 0.05f, -0.05f, 0.0f, 0.0f, -1.0f, -0.05f, 0.05f, -0.05f, 0.0f, 0.0f, -1.0f, -0.05f, -0.05f, -0.05f, 0.0f, 0.0f, -1.0f,
--0.05f, -0.05f, 0.05f, 0.0f, 0.0f, 1.0f, 0.05f, -0.05f, 0.05f, 0.0f, 0.0f, 1.0f, 0.05f, 0.05f, 0.05f, 0.0f, 0.0f, 1.0f,
-0.05f, 0.05f, 0.05f, 0.0f, 0.0f, 1.0f, -0.05f, 0.05f, 0.05f, 0.0f, 0.0f, 1.0f, -0.05f, -0.05f, 0.05f, 0.0f, 0.0f, 1.0f,
--0.05f, 0.05f, 0.05f, -1.0f, 0.0f, 0.0f, -0.05f, 0.05f, -0.05f, -1.0f, 0.0f, 0.0f, -0.05f, -0.05f, -0.05f, -1.0f, 0.0f, 0.0f,
--0.05f, -0.05f, -0.05f, -1.0f, 0.0f, 0.0f, -0.05f, -0.05f, 0.05f, -1.0f, 0.0f, 0.0f, -0.05f, 0.05f, 0.05f, -1.0f, 0.0f, 0.0f,
-0.05f, 0.05f, 0.05f, 1.0f, 0.0f, 0.0f, 0.05f, 0.05f, -0.05f, 1.0f, 0.0f, 0.0f, 0.05f, -0.05f, -0.05f, 1.0f, 0.0f, 0.0f,
-0.05f, -0.05f, -0.05f, 1.0f, 0.0f, 0.0f, 0.05f, -0.05f, 0.05f, 1.0f, 0.0f, 0.0f, 0.05f, 0.05f, 0.05f, 1.0f, 0.0f, 0.0f,
--0.05f, -0.05f, -0.05f, 0.0f, -1.0f, 0.0f, 0.05f, -0.05f, -0.05f, 0.0f, -1.0f, 0.0f, 0.05f, -0.05f, 0.05f, 0.0f, -1.0f, 0.0f,
-0.05f, -0.05f, 0.05f, 0.0f, -1.0f, 0.0f, -0.05f, -0.05f, 0.05f, 0.0f, -1.0f, 0.0f, -0.05f, -0.05f, -0.05f, 0.0f, -1.0f, 0.0f,
--0.05f, 0.05f, -0.05f, 0.0f, 1.0f, 0.0f, 0.05f, 0.05f, -0.05f, 0.0f, 1.0f, 0.0f, 0.05f, 0.05f, 0.05f, 0.0f, 1.0f, 0.0f,
-0.05f, 0.05f, 0.05f, 0.0f, 1.0f, 0.0f, -0.05f, 0.05f, 0.05f, 0.0f, 1.0f, 0.0f, -0.05f, 0.05f, -0.05f, 0.0f, 1.0f, 0.0f
+float vertices[] = {
+	-3.0f, -3.0f, -1.0f, 0.0, 0.0, 1.0, 0.0, 0.0,//plane
+	3.0f, -3.0f, -1.0f, 0.0, 0.0, 1.0, 1.0, 0.0,
+	3.0f, 3.0f, -1.0f, 0.0, 0.0, 1.0, 1.0, 1.0,
+	-3.0f, 3.0f, -1.0f, 0.0, 0.0, 1.0, 0.0, 1.0,
+
+	-0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0, 0.0, 0.0,//front
+	0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0, 1.0, 0.0,
+	0.5f, 0.5f, 0.5f, 0.0, 0.0, 1.0, 1.0, 1.0,
+	0.5f, 0.5f, 0.5f, 0.0, 0.0, 1.0, 1.0, 1.0,
+	-0.5f, 0.5f, 0.5f, 0.0, 0.0, 1.0, 0.0, 1.0,
+	-0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0, 0.0, 0.0,
+
+	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0, 0.0,//back
+	0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0, 0.0,
+	0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0, 1.0,
+	0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0, 1.0,
+	-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0, 1.0,
+	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0, 0.0,
+
+	-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0, 0.0,//left
+	-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0, 0.0,
+	-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0, 1.0,
+	-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0, 1.0,
+	-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0, 1.0,
+	-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0, 0.0,
+
+	0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0, 0.0,//right
+	0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0, 0.0,
+	0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0, 1.0,
+	0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0, 1.0,
+	0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0, 1.0,
+	0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0, 0.0,
+
+	-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0, 0.0,//bottom
+	0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0, 0.0,
+	0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0, 1.0,
+	0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0, 1.0,
+	-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0, 1.0,
+	-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0, 0.0,
+
+	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0, 0.0,//top
+	0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0, 0.0,
+	0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0, 1.0,
+	0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0, 1.0,
+	-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0, 1.0,
+	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0, 0.0,
 };
 int polygon_mode = 2;
-
+unsigned int texture[7];
+BITMAPINFO* bmp;
 
 void Display();
 void Reshape(int w, int h);
 void Keyboard(unsigned char key, int x, int y);
 void InitBuffer();
+void InitTexture();
 
 int main(int argc, char** argv)
 {
@@ -80,7 +118,7 @@ int main(int argc, char** argv)
 	checkCompileErrors(s_program[0], "PROGRAM");
 
 	InitBuffer();
-
+	InitTexture();
 	// callback functions
 	glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);
@@ -94,7 +132,6 @@ int main(int argc, char** argv)
 
 	return 0;
 }
-
 
 int loadObj(const char* filename)
 {
@@ -308,8 +345,133 @@ int loadObj_normalize_center(const char* filename)
 
 	return outvertex.size();
 }
+GLubyte* LoadDIBitmap(const char* filename, BITMAPINFO** info)
+{
+	FILE* fp;
+	GLubyte* bits;
+	int bitsize, infosize;
+	BITMAPFILEHEADER header;
+	//--- 바이너리 읽기 모드로 파일을 연다
+	if ((fp = fopen(filename, "rb")) == NULL)
+		return NULL;
+	//--- 비트맵 파일 헤더를 읽는다.
+	if (fread(&header, sizeof(BITMAPFILEHEADER), 1, fp) < 1) {
+		fclose(fp); return NULL;
+	}
+	//--- 파일이 BMP 파일인지 확인한다.
+	if (header.bfType != 'MB') {
+		fclose(fp); return NULL;
+	}
+	//--- BITMAPINFOHEADER 위치로 간다.
+	infosize = header.bfOffBits - sizeof(BITMAPFILEHEADER);
+	//--- 비트맵 이미지 데이터를 넣을 메모리 할당을 한다.
+	if ((*info = (BITMAPINFO*)malloc(infosize)) == NULL) {
+		fclose(fp); return NULL;
+	}
+	//--- 비트맵 인포 헤더를 읽는다.
+	if (fread(*info, 1, infosize, fp) < (unsigned int)infosize) {
+		free(*info);
+		fclose(fp); return NULL;
+	}
+	//--- 비트맵의 크기 설정
+	if ((bitsize = (*info)->bmiHeader.biSizeImage) == 0)
+		bitsize = ((*info)->bmiHeader.biWidth * (*info)->bmiHeader.biBitCount + 7) / 8.0 * abs((*info)->bmiHeader.biHeight);
+	//--- 비트맵의 크기만큼 메모리를 할당한다.
+	if ((bits = (unsigned char*)malloc(bitsize)) == NULL) {
+		free(*info);
+		fclose(fp); return NULL;
+	}
+	//--- 비트맵 데이터를 bit(GLubyte 타입)에 저장한다.
+	if (fread(bits, 1, bitsize, fp) < (unsigned int)bitsize) {
+		free(*info); free(bits);
+		fclose(fp); return NULL;
+	}
+	fclose(fp);
+	return bits;
+}
+void InitTexture()
+{
+	//--- plane
+	glGenTextures(1, texture);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	unsigned char* data = LoadDIBitmap("plane.bmp", &bmp);
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+	//--- texture 1
+	//glBindTexture(GL_TEXTURE_2D, texture[1]);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//unsigned char* data1 = LoadDIBitmap("texture.bmp", &bmp);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data1);
+	////--- texture 2
+	//glBindTexture(GL_TEXTURE_2D, texture[2]);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//unsigned char* data2 = LoadDIBitmap("texture1.bmp", &bmp);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data2);
+
+	//glBindTexture(GL_TEXTURE_2D, texture[3]);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//unsigned char* data3 = LoadDIBitmap("texture2.bmp", &bmp);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data3);
+	////--- texture 2
+	//glBindTexture(GL_TEXTURE_2D, texture[4]);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//unsigned char* data4 = LoadDIBitmap("texture3.bmp", &bmp);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data4);
+
+	//glBindTexture(GL_TEXTURE_2D, texture[5]);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//unsigned char* data5 = LoadDIBitmap("texture4.bmp", &bmp);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data5);
+	////--- texture 2
+	//glBindTexture(GL_TEXTURE_2D, texture[6]);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	//unsigned char* data6 = LoadDIBitmap("texture5.bmp", &bmp);
+	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data6);
+
+	glUseProgram(s_program[0]);
+	int tLocation = glGetUniformLocation(s_program[0], "texture1"); //--- outTexture 유니폼 샘플러의 위치를 가져옴
+	glUniform1i(tLocation, 0);
+}
 void InitBuffer()
 {
+
+	glGenVertexArrays(1, &CUB);
+	GLuint VBO;
+	glGenBuffers(1, &VBO);
+
+	//glUseProgram(s_program[0]);
+	glBindVertexArray(CUB);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0); //--- 위치 속성
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))); //--- 노말값 속성
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))); //--- 텍스처 좌표 속성
+	glEnableVertexAttribArray(2);
+
 	num_Triangle = loadObj_normalize_center("sphere.obj");
 
 	//// 5.1. VAO 객체 생성 및 바인딩
@@ -333,17 +495,7 @@ void InitBuffer()
 	glVertexAttribPointer(nAttribute, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
 	glEnableVertexAttribArray(nAttribute);
 
-	GLuint VBO;
-	glGenBuffers(1, &VBO);
-	glBindVertexArray(CUB);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); //--- 위치 속성
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); //--- 노말 속성
-	glEnableVertexAttribArray(1);
 	unsigned int lightPosLocation = glGetUniformLocation(s_program[0], "lightPos");
 	unsigned int lightColorLocation = glGetUniformLocation(s_program[0], "lightColor");
 	glUniform3f(lightPosLocation, lightpos.x, lightpos.y, lightpos.z);
@@ -354,11 +506,15 @@ void InitBuffer()
 	glEnable(GL_DEPTH_TEST);
 }
 
-
 void Display()
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glUseProgram(s_program[0]);
+	glBindVertexArray(CUB);
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_DEPTH_TEST);
 
 	//if (polygon_mode == 1)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -370,8 +526,8 @@ void Display()
 	//cameraDirection = glm::normalize(cameraPos - cameraTarget);
 
 
-	glUseProgram(s_program[0]);
-	glBindVertexArray(VAO[0]);
+	/*glUseProgram(s_program[0]);
+	glBindVertexArray(VAO[0]);*/
 
 
 
@@ -402,13 +558,18 @@ void Display()
 
 
 	glm::mat4 view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
-	glm::mat4 projection = glm::mat4(1.0f);
 
-	projection = glm::perspective(glm::radians(glm::degrees(120.0f)), 1.0f, 0.1f, 100.0f);
+	glm::mat4 pTransform = glm::mat4(1.0f);
+	pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 1.0f, -1.0f);
+	pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+	glUniformMatrix4fv(projloc, 1, GL_FALSE, &pTransform[0][0]);
+	/*glm::mat4 projection = glm::mat4(1.0f);
+
+	projection = glm::perspective(glm::radians(glm::degrees(120.0f)), 1.0f, 0.1f, 100.0f);*/
 
 	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &model[0][0]);
 	glUniformMatrix4fv(viewloc, 1, GL_FALSE, &view[0][0]);
-	glUniformMatrix4fv(projloc, 1, GL_FALSE, &projection[0][0]);
+	//glUniformMatrix4fv(projloc, 1, GL_FALSE, &projection[0][0]);
 
 
 	glUniform3f(lightPosLocation, sunpos.x, sunpos.y, sunpos.z);
@@ -420,54 +581,58 @@ void Display()
 	//sun
 	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &sun[0][0]);
 
-	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
 
-	//mercury
-	glUniform3f(objColorLocation, 0.0, 1.0, 0.0);
-	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &mercury[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	////mercury
+	//glUniform3f(objColorLocation, 0.0, 1.0, 0.0);
+	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &mercury[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	//venus
-	glUniform3f(objColorLocation, 0.0, 0.0, 1.0);
-	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &venus[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	////venus
+	//glUniform3f(objColorLocation, 0.0, 0.0, 1.0);
+	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &venus[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	//earth
-	glUniform3f(objColorLocation, 0.0, 1.0, 1.0);
-	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &earth[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	////earth
+	//glUniform3f(objColorLocation, 0.0, 1.0, 1.0);
+	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &earth[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
 
-	//mars
-	glUniform3f(objColorLocation, 1.0, 0.0, 1.0);
-	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &mars[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	////mars
+	//glUniform3f(objColorLocation, 1.0, 0.0, 1.0);
+	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &mars[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	//jupiter
-	glUniform3f(objColorLocation, 1.0, 0.0, 1.0);
-	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &jupiter[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	////jupiter
+	//glUniform3f(objColorLocation, 1.0, 0.0, 1.0);
+	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &jupiter[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	//satrun
-	glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
-	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &saturn[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	////satrun
+	//glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
+	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &saturn[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	//uranus
-	glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
-	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &uranus[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	////uranus
+	//glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
+	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &uranus[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	//neptune
-	glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
-	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &neptune[0][0]);
-	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	////neptune
+	//glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
+	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &neptune[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	glm::mat4 Plane = glm::mat4(1.0f);
+	/*glUniform3f(objColorLocation, 0.0, 1.0, 1.0);*/
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &Plane[0][0]);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glDrawArrays(GL_QUADS, 0, 4);
 
 	glutSwapBuffers();
 
 }
-
 void Reshape(int w, int h)
 {
 	g_window_w = w;
@@ -513,7 +678,6 @@ void timer_y(int value)
 	glutPostRedisplay();
 
 }
-
 void Keyboard(unsigned char key, int x, int y)
 {
 	static float i = 0.0f;
