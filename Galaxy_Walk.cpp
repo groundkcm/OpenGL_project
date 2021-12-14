@@ -6,16 +6,15 @@
 using namespace std;
 
 //glm::vec3 cameraPos = glm::vec3(0.0f, 10.0, 0.0f);
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0, 5.0f);
-//glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0, 0.0f);
-//
-//glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0, 0.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 1.5, 5.0f);
+glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0, 0.0f);
+glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+//glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0, 0.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
-glm::vec3 lightpos = glm::vec3(0,5,0);
+glm::vec3 lightpos = glm::vec3(0, 5, 0);
 glm::vec3 lightcolor = glm::vec3(1, 1, 1);
-glm::vec3 sunpos = glm::vec3(0,0.7,0);
+glm::vec3 sunpos = glm::vec3(0, 0.7, 0);
 GLuint g_window_w = 1000;
 GLuint g_window_h = 1000;
 
@@ -24,6 +23,10 @@ GLuint VAO[3], CUB;
 GLuint VBO_position[3];
 GLuint VBO_normal[3];
 GLuint VBO_color[3];
+bool timery = false;
+bool timerstop = false;
+float dep;
+int character;
 
 float vertices[] = {
 	-6.0f, -6.0f, -6.0f, 0.0, 0.0, 1.0, 0.0, 0.0,//back
@@ -59,6 +62,57 @@ float vertices[] = {
 int polygon_mode = 2;
 unsigned int texture[7];
 BITMAPINFO* bmp;
+glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.5, 0.5));
+glm::mat4 sun = glm::scale(glm::mat4(1.0f), glm::vec3(1, 1, 1)) * model;
+
+glm::mat4 mercury = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5 - 0.1, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.04, 0.04, 0.04)) * model;
+glm::mat4 venus = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5 - 0.3, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1, 0.1, 0.1)) * model;
+glm::mat4 earth = glm::translate(glm::mat4(1.0f), glm::vec3(-0.55 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.105, 0.105, 0.105)) * model;
+glm::mat4 mars = glm::translate(glm::mat4(1.0f), glm::vec3(-0.7 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.058, 0.058, 0.058)) * model;
+
+glm::mat4 jupiter = glm::translate(glm::mat4(1.0f), glm::vec3(-0.7 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.5, 0.5)) * model;
+glm::mat4 saturn = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5 - 1.4, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.5, 0.5)) * model;
+glm::mat4 uranus = glm::translate(glm::mat4(1.0f), glm::vec3(-1.7 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.2, 0.2, 0.2)) * model;
+glm::mat4 neptune = glm::translate(glm::mat4(1.0f), glm::vec3(-1.9 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.2, 0.2, 0.2)) * model;
+
+
+void reset()
+{
+	timerstop = false;
+	character = 0;
+	dep = 0.0f;
+	timery = false;
+
+	lightcolor = glm::vec3(1.0f, 1.0f, 1.0f);
+
+	//glm::vec3 cameraPos = glm::vec3(0.0f, 10.0, 0.0f);
+	cameraPos = glm::vec3(0.0f, 1.5, 5.0f); 
+	cameraTarget = glm::vec3(0.0f, 0.0, 0.0f);
+	
+	cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	//glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0, 0.0f);
+	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+	lightpos = glm::vec3(0, 5, 0);
+	lightcolor = glm::vec3(1, 1, 1);
+	sunpos = glm::vec3(0, 0.7, 0);
+
+
+	model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.5, 0.5));
+	sun = glm::scale(glm::mat4(1.0f), glm::vec3(1, 1, 1)) * model;
+
+	mercury = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5 - 0.1, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.04, 0.04, 0.04)) * model;
+	venus = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5 - 0.3, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1, 0.1, 0.1)) * model;
+	earth = glm::translate(glm::mat4(1.0f), glm::vec3(-0.55 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.105, 0.105, 0.105)) * model;
+	mars = glm::translate(glm::mat4(1.0f), glm::vec3(-0.7 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.058, 0.058, 0.058)) * model;
+
+	jupiter = glm::translate(glm::mat4(1.0f), glm::vec3(-0.7 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.5, 0.5)) * model;
+	saturn = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5 - 1.4, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.5, 0.5)) * model;
+	uranus = glm::translate(glm::mat4(1.0f), glm::vec3(-1.7 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.2, 0.2, 0.2)) * model;
+	neptune = glm::translate(glm::mat4(1.0f), glm::vec3(-1.9 - 0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.2, 0.2, 0.2)) * model;
+
+
+}
 
 void Display();
 void Reshape(int w, int h);
@@ -99,9 +153,9 @@ int main(int argc, char** argv)
 	glAttachShader(s_program[0], fShader[0]);
 	glLinkProgram(s_program[0]);
 	checkCompileErrors(s_program[0], "PROGRAM");
+	InitTexture();
 
 	InitBuffer();
-	InitTexture();
 	// callback functions
 	glutDisplayFunc(Display);
 	glutReshapeFunc(Reshape);
@@ -383,55 +437,6 @@ void InitTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	unsigned char* data = LoadDIBitmap("plane.bmp", &bmp);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-	//--- texture 1
-	//glBindTexture(GL_TEXTURE_2D, texture[1]);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//unsigned char* data1 = LoadDIBitmap("texture.bmp", &bmp);
-	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data1);
-	////--- texture 2
-	//glBindTexture(GL_TEXTURE_2D, texture[2]);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//unsigned char* data2 = LoadDIBitmap("texture1.bmp", &bmp);
-	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data2);
-
-	//glBindTexture(GL_TEXTURE_2D, texture[3]);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//unsigned char* data3 = LoadDIBitmap("texture2.bmp", &bmp);
-	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data3);
-	////--- texture 2
-	//glBindTexture(GL_TEXTURE_2D, texture[4]);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//unsigned char* data4 = LoadDIBitmap("texture3.bmp", &bmp);
-	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data4);
-
-	//glBindTexture(GL_TEXTURE_2D, texture[5]);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//unsigned char* data5 = LoadDIBitmap("texture4.bmp", &bmp);
-	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data5);
-	////--- texture 2
-	//glBindTexture(GL_TEXTURE_2D, texture[6]);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	//unsigned char* data6 = LoadDIBitmap("texture5.bmp", &bmp);
-	//glTexImage2D(GL_TEXTURE_2D, 0, 3, 1024, 1024, 0, GL_BGR, GL_UNSIGNED_BYTE, data6);
-
 	glUseProgram(s_program[0]);
 	int tLocation = glGetUniformLocation(s_program[0], "texture1"); //--- outTexture À¯´ÏÆû »ùÇÃ·¯ÀÇ À§Ä¡¸¦ °¡Á®¿È
 	glUniform1i(tLocation, 0);
@@ -484,8 +489,6 @@ void InitBuffer()
 	glUniform3f(lightPosLocation, lightpos.x, lightpos.y, lightpos.z);
 	glUniform3f(lightColorLocation, lightcolor.x, lightcolor.y, lightcolor.z);
 
-
-
 	glEnable(GL_DEPTH_TEST);
 }
 
@@ -501,10 +504,6 @@ void Display()
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	//*************************************************************************
-	// Drawing circle
-	//cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
 
 	unsigned int modelloc = glGetUniformLocation(s_program[0], "model");
 	unsigned int viewloc = glGetUniformLocation(s_program[0], "view");
@@ -514,6 +513,8 @@ void Display()
 	unsigned int lightColorLocation = glGetUniformLocation(s_program[0], "lightColor");
 	unsigned int objColorLocation = glGetUniformLocation(s_program[0], "objectColor");
 	unsigned int viewPosLocation = glGetUniformLocation(s_program[0], "viewPos");
+	int ambient = glGetUniformLocation(s_program[0], "ambientLight");
+	glUniform3f(ambient, 0.5 + dep, 0.5 + dep, 0.5 + dep);
 
 	glm::mat4 Plane = glm::mat4(1.0f);
 	glUniform3f(objColorLocation, 1.0, 1.0, 1.0);
@@ -522,44 +523,35 @@ void Display()
 	glDrawArrays(GL_QUADS, 0, 24);
 
 
-	//glUseProgram(s_program[0]);
+	glUseProgram(s_program[0]);
 	glBindVertexArray(VAO[0]);
 
-	glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5,0.5,0.5));
-
-	//glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5,1 , 0.5));
-	glm::mat4 sun = glm::scale(glm::mat4(1.0f), glm::vec3(1,1,1)) * model;
-
-	glm::mat4 mercury = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5-0.1, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.04, 0.04, 0.04)) * model;
-	glm::mat4 venus= glm::translate(glm::mat4(1.0f), glm::vec3(-0.5-0.3, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.1, 0.1, 0.1)) * model;
-	glm::mat4 earth = glm::translate(glm::mat4(1.0f), glm::vec3(-0.55-0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.105, 0.105, 0.105)) * model;
-	glm::mat4 mars = glm::translate(glm::mat4(1.0f), glm::vec3(-0.7-0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.058, 0.058, 0.058)) * model;
-
-	glm::mat4 jupiter = glm::translate(glm::mat4(1.0f), glm::vec3(-0.7-0.5, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5,0.5,0.5)) * model;
-	glm::mat4 saturn = glm::translate(glm::mat4(1.0f), glm::vec3(-0.5-1.4, 0, 0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.5, 0.5, 0.5)) * model;
-	glm::mat4 uranus = glm::translate(glm::mat4(1.0f), glm::vec3(-1.7-0.5,0,0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.2,0.2,0.2)) * model;
-	glm::mat4 neptune = glm::translate(glm::mat4(1.0f), glm::vec3(-1.9-0.5,0,0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.2, 0.2, 0.2)) * model;
-
-	glm::mat4 view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
 
 	glm::mat4 pTransform = glm::mat4(1.0f);
-	pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 1.0f, -1.0f);
-	//pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+	if (character) pTransform = glm::perspective(glm::radians(55.0f), 1.0f, 1.0f, -1.0f);
+	else pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 1.0f, -1.0f);
 	glUniformMatrix4fv(projloc, 1, GL_FALSE, &pTransform[0][0]);
-	/*glm::mat4 projection = glm::mat4(1.0f);
-
-	projection = glm::perspective(glm::radians(glm::degrees(120.0f)), 1.0f, 0.1f, 100.0f);*/
 
 	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &model[0][0]);
+
+	/*if (character) {
+		cameraPos = glm::vec3(0.0f, 1.0, 0.0);
+		cameraTarget = glm::vec3(-2.0, 1.0, 0.0f);
+		cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	}
+	else {
+		cameraPos = glm::vec3(0.0f, 1.5, 5.0f);
+		cameraTarget = glm::vec3(0.0f, 0.0, 0.0f);
+		cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	}*/
+	glm::mat4 view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
+	glUniform3f(viewPosLocation, cameraPos.x, cameraPos.y, cameraPos.z);
+
 	glUniformMatrix4fv(viewloc, 1, GL_FALSE, &view[0][0]);
-	//glUniformMatrix4fv(projloc, 1, GL_FALSE, &projection[0][0]);
 
 
 	glUniform3f(lightPosLocation, sunpos.x, sunpos.y, sunpos.z);
 	glUniform3f(lightColorLocation, lightcolor.x, lightcolor.y, lightcolor.z);
-
-	glUniform3f(objColorLocation, 1.0, 0.0, 0.0);
-	glUniform3f(viewPosLocation, cameraPos.x, cameraPos.y, cameraPos.z);
 
 	//sun
 	glUniform3f(objColorLocation, 1.0, 0.0, 0.0);
@@ -619,24 +611,35 @@ void Reshape(int w, int h)
 	glViewport(0, 0, w, h);
 }
 
-bool timerstop = false;
-void timer(int a)
+void timer(int a)//r´©¸¦¶§
 {
 	if (timerstop == false) {
 		return;
 		glutPostRedisplay();
 	}
-	static float r = 0.0f;
-	lightpos.x = 5 * glm::sin(r);
-	lightpos.z = 5 * glm::cos(r);
-	r += 0.05f;
+	static float speed[8] = { 1.0f,0.8f,0.7f,0.5f,0.4f,0.3f,0.2f,0.1f };
+
+	mercury = glm::rotate(glm::mat4(1.0f), glm::radians(speed[0]), glm::vec3(0, 1, 0)) * mercury;
+
+	venus = glm::rotate(glm::mat4(1.0f), glm::radians(speed[1]), glm::vec3(0, 1, 0)) * venus;
+
+	earth = glm::rotate(glm::mat4(1.0f), glm::radians(speed[2]), glm::vec3(0, 1, 0)) * earth;
+
+	mars = glm::rotate(glm::mat4(1.0f), glm::radians(speed[3]), glm::vec3(0, 1, 0)) * mars;
+
+	jupiter = glm::rotate(glm::mat4(1.0f), glm::radians(speed[4]), glm::vec3(0, 1, 0)) * jupiter;
+
+	saturn = glm::rotate(glm::mat4(1.0f), glm::radians(speed[5]), glm::vec3(0, 1, 0)) * saturn;
+
+	uranus = glm::rotate(glm::mat4(1.0f), glm::radians(speed[6]), glm::vec3(0, 1, 0)) * uranus;
+
+	neptune = glm::rotate(glm::mat4(1.0f), glm::radians(speed[7]), glm::vec3(0, 1, 0)) * neptune;
 
 
 	glutPostRedisplay();
-	glutTimerFunc(100, timer, 1);
+	glutTimerFunc(10, timer, 1);
 
 }
-bool timery = false;
 void timer_y(int value)
 {
 	if (!timery) {
@@ -645,19 +648,24 @@ void timer_y(int value)
 	}
 
 	static float i = 0.0f;
+	if (character) {
+		cameraDirection = glm::vec3(glm::sin(i), 0.5, glm::cos(i));
+		i += 0.01f;
+	}
+	else {
+		cameraPos.x = 5 * glm::sin(i);
+		cameraPos.z = 5 * glm::cos(i);
 
-	cameraPos.x = 5 * glm::sin(i);
-	cameraPos.z = 5 * glm::cos(i);
-
-	cameraDirection = glm::vec3(0.0f, 0.0, 0.0f);
-	/*glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
-	i += 0.01f;
-	cameraDirection = glm::normalize(cameraPos - cameraTarget);*/
-
-	glutTimerFunc(10, timer_y, 1);
+		cameraTarget = glm::vec3(0, 0, 0);
+		i += 0.01f;
+		cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	}
+	glutTimerFunc(30, timer_y, 1);
 	glutPostRedisplay();
 
 }
+
+
 void Keyboard(unsigned char key, int x, int y)
 {
 	static float i = 0.0f;
@@ -665,6 +673,28 @@ void Keyboard(unsigned char key, int x, int y)
 
 	switch (key)
 	{
+	case '+':
+		dep += 0.05f;
+		break;
+	case '-':
+		dep -= 0.05f;
+		break;
+	case '1':
+		character = 1;
+		cameraPos = glm::vec3(0.0f, 1.0, 0.0);
+		cameraTarget = glm::vec3(-2.0, 1.0, 0.0f);
+		cameraDirection = glm::normalize(cameraPos - cameraTarget);
+		break;
+	case '3':
+		character = 0;
+		cameraPos = glm::vec3(0.0f, 1.5, 5.0f);
+		cameraTarget = glm::vec3(0.0f, 0.0, 0.0f);
+		cameraDirection = glm::normalize(cameraPos - cameraTarget);
+		break;
+	case 's':
+		reset();
+		glutPostRedisplay();
+		break;
 	case '0':
 		cameraPos.y -= 0.5f;
 		cameraDirection.y -= 0.5f;
@@ -672,36 +702,35 @@ void Keyboard(unsigned char key, int x, int y)
 	case '9':
 		cameraPos.y += 0.5f;
 		cameraDirection.y += 0.5f;
-		cout << cameraPos.y;
 
 		break;
 	case 'z':
 		cameraPos.z += 0.1f;
-		//cameraDirection.z += 0.1f;
+		cameraDirection.z += 0.1f;
 
 		break;
 	case 'Z':
 		cameraPos.z -= 0.1f;
-		//cameraDirection.z -= 0.1;
+		cameraDirection.z -= 0.1;
 
 		break;
 	case 'x':
 		cameraPos.x += 0.1f;
-		//cameraDirection.x += 0.1f;
+		cameraDirection.x += 0.1f;
 		break;
 	case 'X':
 		cameraPos.x -= 0.1f;
-		//cameraDirection.x -= 0.1;
+		cameraDirection.x -= 0.1;
 		break;
 
 	case 'y':
 		timery = true;
-		glutTimerFunc(10, timer_y, 1);
+		glutTimerFunc(30, timer_y, 1);
 
 		break;
 	case 'Y':
 		timery = false;
-		glutTimerFunc(10, timer_y, 1);
+		glutTimerFunc(30, timer_y, 1);
 
 		break;
 	case 'c':
@@ -739,6 +768,7 @@ void Keyboard(unsigned char key, int x, int y)
 	case 'R':
 		timerstop = false;
 		glutTimerFunc(100, timer, 1);
+		break;
 	case 'q':
 		glutLeaveMainLoop();
 	default:

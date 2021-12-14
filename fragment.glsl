@@ -6,6 +6,7 @@ in vec2 TexCoord;
 
 out vec4 FragColor; 
 
+uniform vec3 ambientLight;
 uniform vec3 viewPos;
 uniform vec3 lightPos; 
 uniform vec3 lightColor; 
@@ -14,7 +15,6 @@ uniform sampler2D texture1;
 
 void main(void) 
 {
-	vec3 ambientLight = vec3(0.7f, 0.7f, 0.7f);
 	vec3 ambient = ambientLight * lightColor;
 
 	vec3 normalVector = normalize(Normal);
