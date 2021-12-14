@@ -15,7 +15,7 @@ glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 glm::vec3 lightpos = glm::vec3(0,5,0);
 glm::vec3 lightcolor = glm::vec3(1, 1, 1);
-glm::vec3 sunpos = glm::vec3(0,0, 0);
+glm::vec3 sunpos = glm::vec3(0,0.7,0);
 GLuint g_window_w = 1000;
 GLuint g_window_h = 1000;
 
@@ -26,52 +26,35 @@ GLuint VBO_normal[3];
 GLuint VBO_color[3];
 
 float vertices[] = {
-	-3.0f, -3.0f, -1.0f, 0.0, 0.0, 1.0, 0.0, 0.0,//plane
-	3.0f, -3.0f, -1.0f, 0.0, 0.0, 1.0, 1.0, 0.0,
-	3.0f, 3.0f, -1.0f, 0.0, 0.0, 1.0, 1.0, 1.0,
-	-3.0f, 3.0f, -1.0f, 0.0, 0.0, 1.0, 0.0, 1.0,
+	-6.0f, -6.0f, -6.0f, 0.0, 0.0, 1.0, 0.0, 0.0,//back
+	6.0f, -6.0f, -6.0f, 0.0, 0.0, 1.0, 1.0, 0.0,
+	6.0f, 6.0f, -6.0f, 0.0, 0.0, 1.0, 1.0, 1.0,
+	-6.0f, 6.0f, -6.0f, 0.0, 0.0, 1.0, 0.0, 1.0,
 
-	-0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0, 0.0, 0.0,//front
-	0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0, 1.0, 0.0,
-	0.5f, 0.5f, 0.5f, 0.0, 0.0, 1.0, 1.0, 1.0,
-	0.5f, 0.5f, 0.5f, 0.0, 0.0, 1.0, 1.0, 1.0,
-	-0.5f, 0.5f, 0.5f, 0.0, 0.0, 1.0, 0.0, 1.0,
-	-0.5f, -0.5f, 0.5f, 0.0, 0.0, 1.0, 0.0, 0.0,
+	-6.0f, -6.0f, 6.0f, 0.0, 0.0, -1.0, 0.0, 0.0,//front
+	-6.0f, 6.0f, 6.0f, 0.0, 0.0, -1.0, 1.0, 0.0,
+	6.0f, 6.0f, 6.0f, 0.0, 0.0, -1.0, 1.0, 1.0,
+	6.0f, -6.0f, 6.0f, 0.0, 0.0, -1.0, 0.0, 1.0,
 
-	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0, 0.0,//back
-	0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0, 0.0,
-	0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0, 1.0,
-	0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0, 1.0,
-	-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0, 1.0,
-	-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0, 0.0,
+	-6.0f, -6.0f, 6.0f, 1.0f, 0.0f, 0.0f, 0.0, 0.0,//left
+	-6.0f, -6.0f, -6.0f, 1.0f, 0.0f, 0.0f, 1.0, 0.0,
+	-6.0f, 6.0f, -6.0f, 1.0f, 0.0f, 0.0f, 1.0, 1.0,
+	-6.0f, 6.0f, 6.0f, 1.0f, 0.0f, 0.0f, 0.0, 1.0,
 
-	-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0, 0.0,//left
-	-0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0, 0.0,
-	-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0, 1.0,
-	-0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0, 1.0,
-	-0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0, 1.0,
-	-0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0, 0.0,
+	6.0f, -6.0f, -6.0f, -1.0f, 0.0f, 0.0f, 0.0, 0.0,//right
+	6.0f, -6.0f, 6.0f, -1.0f, 0.0f, 0.0f, 1.0, 0.0,
+	6.0f, 6.0f, 6.0f, -1.0f, 0.0f, 0.0f, 1.0, 1.0,
+	6.0f, 6.0f, -6.0f, -1.0f, 0.0f, 0.0f, 0.0, 1.0,
 
-	0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0, 0.0,//right
-	0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0, 0.0,
-	0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0, 1.0,
-	0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0, 1.0,
-	0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0, 1.0,
-	0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0, 0.0,
+	-6.0f, -6.0f, 6.0f, 0.0f, 1.0f, 0.0f, 0.0, 0.0,//bottom
+	6.0f, -6.0f, 6.0f, 0.0f, 1.0f, 0.0f, 1.0, 0.0,
+	6.0f, -6.0f, -6.0f, 0.0f, 1.0f, 0.0f, 1.0, 1.0,
+	-6.0f, -6.0f, -6.0f, 0.0f, 1.0f, 0.0f, 0.0, 1.0,
 
-	-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0, 0.0,//bottom
-	0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0, 0.0,
-	0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0, 1.0,
-	0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0, 1.0,
-	-0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 0.0, 1.0,
-	-0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 0.0, 0.0,
-
-	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0, 0.0,//top
-	0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0, 0.0,
-	0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0, 1.0,
-	0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0, 1.0,
-	-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0, 1.0,
-	-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0, 0.0,
+	-6.0f, 6.0f, -6.0f, 0.0f, -1.0f, 0.0f, 0.0, 0.0,//top
+	6.0f, 6.0f, -6.0f, 0.0f, -1.0f, 0.0f, 1.0, 0.0,
+	6.0f, 6.0f, 6.0f, 0.0f, -1.0f, 0.0f, 1.0, 1.0,
+	-6.0f, 6.0f, 6.0f, 0.0f, -1.0f, 0.0f, 0.0, 1.0,
 };
 int polygon_mode = 2;
 unsigned int texture[7];
@@ -89,7 +72,7 @@ int main(int argc, char** argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowSize(g_window_w, g_window_h);
-	glutInitWindowPosition(0, 0);
+	glutInitWindowPosition(300, 0);
 
 	glutCreateWindow("Computer Graphics");
 	glewExperimental = GL_TRUE;
@@ -508,7 +491,7 @@ void InitBuffer()
 
 void Display()
 {
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(s_program[0]);
@@ -516,19 +499,11 @@ void Display()
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_DEPTH_TEST);
 
-	//if (polygon_mode == 1)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//else if (polygon_mode == 2)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//*************************************************************************
 	// Drawing circle
 	//cameraDirection = glm::normalize(cameraPos - cameraTarget);
-
-
-	/*glUseProgram(s_program[0]);
-	glBindVertexArray(VAO[0]);*/
-
 
 
 	unsigned int modelloc = glGetUniformLocation(s_program[0], "model");
@@ -539,6 +514,17 @@ void Display()
 	unsigned int lightColorLocation = glGetUniformLocation(s_program[0], "lightColor");
 	unsigned int objColorLocation = glGetUniformLocation(s_program[0], "objectColor");
 	unsigned int viewPosLocation = glGetUniformLocation(s_program[0], "viewPos");
+
+	glm::mat4 Plane = glm::mat4(1.0f);
+	glUniform3f(objColorLocation, 1.0, 1.0, 1.0);
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &Plane[0][0]);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glDrawArrays(GL_QUADS, 0, 24);
+
+
+	//glUseProgram(s_program[0]);
+	glBindVertexArray(VAO[0]);
+
 	glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5,0.5,0.5));
 
 	//glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5,1 , 0.5));
@@ -554,14 +540,11 @@ void Display()
 	glm::mat4 uranus = glm::translate(glm::mat4(1.0f), glm::vec3(-1.7-0.5,0,0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.2,0.2,0.2)) * model;
 	glm::mat4 neptune = glm::translate(glm::mat4(1.0f), glm::vec3(-1.9-0.5,0,0)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.2, 0.2, 0.2)) * model;
 
-
-
-
 	glm::mat4 view = glm::lookAt(cameraPos, cameraDirection, cameraUp);
 
 	glm::mat4 pTransform = glm::mat4(1.0f);
 	pTransform = glm::perspective(glm::radians(45.0f), 1.0f, 1.0f, -1.0f);
-	pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
+	//pTransform = glm::translate(pTransform, glm::vec3(0.0, 0.0, -5.0f));
 	glUniformMatrix4fv(projloc, 1, GL_FALSE, &pTransform[0][0]);
 	/*glm::mat4 projection = glm::mat4(1.0f);
 
@@ -579,56 +562,52 @@ void Display()
 	glUniform3f(viewPosLocation, cameraPos.x, cameraPos.y, cameraPos.z);
 
 	//sun
+	glUniform3f(objColorLocation, 1.0, 0.0, 0.0);
 	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &sun[0][0]);
-
-	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
-
-
-	////mercury
-	//glUniform3f(objColorLocation, 0.0, 1.0, 0.0);
-	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &mercury[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
-
-	////venus
-	//glUniform3f(objColorLocation, 0.0, 0.0, 1.0);
-	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &venus[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
-
-	////earth
-	//glUniform3f(objColorLocation, 0.0, 1.0, 1.0);
-	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &earth[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
 
-	////mars
-	//glUniform3f(objColorLocation, 1.0, 0.0, 1.0);
-	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &mars[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	//mercury
+	glUniform3f(objColorLocation, 0.0, 1.0, 0.0);
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &mercury[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	////jupiter
-	//glUniform3f(objColorLocation, 1.0, 0.0, 1.0);
-	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &jupiter[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	//venus
+	glUniform3f(objColorLocation, 0.0, 0.0, 1.0);
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &venus[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	////satrun
-	//glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
-	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &saturn[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+	//earth
+	glUniform3f(objColorLocation, 0.0, 0.0, 1.0);
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &earth[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	////uranus
-	//glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
-	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &uranus[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
 
-	////neptune
-	//glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
-	//glUniformMatrix4fv(modelloc, 1, GL_FALSE, &neptune[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
-	glm::mat4 Plane = glm::mat4(1.0f);
-	/*glUniform3f(objColorLocation, 0.0, 1.0, 1.0);*/
-	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &Plane[0][0]);
-	glBindTexture(GL_TEXTURE_2D, texture[0]);
-	glDrawArrays(GL_QUADS, 0, 4);
+	//mars
+	glUniform3f(objColorLocation, 1.0, 0.0, 0.0);
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &mars[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+
+	//jupiter
+	glUniform3f(objColorLocation, 1.0, 0.0, 1.0);
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &jupiter[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+
+	//satrun
+	glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &saturn[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+
+	//uranus
+	glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &uranus[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+
+	//neptune
+	glUniform3f(objColorLocation, 1.0, 1.0, 0.0);
+	glUniformMatrix4fv(modelloc, 1, GL_FALSE, &neptune[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, num_Triangle);
+
 
 	glutSwapBuffers();
 
@@ -670,9 +649,10 @@ void timer_y(int value)
 	cameraPos.x = 5 * glm::sin(i);
 	cameraPos.z = 5 * glm::cos(i);
 
-	glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
+	cameraDirection = glm::vec3(0.0f, 0.0, 0.0f);
+	/*glm::vec3 cameraTarget = glm::vec3(0, 0, 0);
 	i += 0.01f;
-	cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	cameraDirection = glm::normalize(cameraPos - cameraTarget);*/
 
 	glutTimerFunc(10, timer_y, 1);
 	glutPostRedisplay();
@@ -697,21 +677,21 @@ void Keyboard(unsigned char key, int x, int y)
 		break;
 	case 'z':
 		cameraPos.z += 0.1f;
-		cameraDirection.z += 0.1f;
+		//cameraDirection.z += 0.1f;
 
 		break;
 	case 'Z':
 		cameraPos.z -= 0.1f;
-		cameraDirection.z -= 0.1;
+		//cameraDirection.z -= 0.1;
 
 		break;
 	case 'x':
 		cameraPos.x += 0.1f;
-		cameraDirection.x += 0.1f;
+		//cameraDirection.x += 0.1f;
 		break;
 	case 'X':
 		cameraPos.x -= 0.1f;
-		cameraDirection.x -= 0.1;
+		//cameraDirection.x -= 0.1;
 		break;
 
 	case 'y':
@@ -750,7 +730,6 @@ void Keyboard(unsigned char key, int x, int y)
 		break;
 	case 'C':
 		lightcolor = glm::vec3(1.0f, 1.0f, 1.0f);
-
 		break;
 
 	case 'r':
@@ -760,7 +739,8 @@ void Keyboard(unsigned char key, int x, int y)
 	case 'R':
 		timerstop = false;
 		glutTimerFunc(100, timer, 1);
-
+	case 'q':
+		glutLeaveMainLoop();
 	default:
 		break;
 	}

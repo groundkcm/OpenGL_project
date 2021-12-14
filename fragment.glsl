@@ -14,7 +14,7 @@ uniform sampler2D texture1;
 
 void main(void) 
 {
-	vec3 ambientLight = vec3(0.5f, 0.5f, 0.5f);
+	vec3 ambientLight = vec3(0.7f, 0.7f, 0.7f);
 	vec3 ambient = ambientLight * lightColor;
 
 	vec3 normalVector = normalize(Normal);
@@ -27,11 +27,11 @@ void main(void)
 	vec3 reflectDir = reflect(-lightDir, normalVector);  
 	float specularLight = max(dot(viewDir, reflectDir), 0.0f); 
 	specularLight = pow(specularLight, shininess); 
-	vec3 specular =specularLight * lightColor;
+	vec3 specular = specularLight * lightColor;
 
-	vec3 result = (ambient + diffuse + specular);
+	vec3 result = (ambient + diffuse + specular) * objectColor;
 
-	FragColor = vec4 (result, 1.0f);
+	vec4 lightcolor = vec4 (result, 1.0f);
 
-	FragColor = texture(texture1, TexCoord) * FragColor;
+	FragColor = texture(texture1, TexCoord) * lightcolor;
 }
